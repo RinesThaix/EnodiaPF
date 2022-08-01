@@ -53,9 +53,9 @@ class MutableBlockStateProvider(instance: Instance) : CachedBlockStateProvider(i
             sections[sectionIndex] = section
         }
         section[
-                x % Chunk.CHUNK_SIZE_X,
+                x and 15,
                 y % Chunk.CHUNK_SECTION_SIZE,
-                z % Chunk.CHUNK_SIZE_Z
+                z and 15
         ] = BlockStateProvider.createMaskFromBlock(block)
 
         val copiedCache = Long2ObjectOpenHashMap(cache)
