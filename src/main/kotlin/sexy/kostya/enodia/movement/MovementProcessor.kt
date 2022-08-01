@@ -80,7 +80,7 @@ class MovementProcessor internal constructor(
                         val currentPosition = ReusablePoint.fromPoint(entity.position)
                         if (pathLength + sqrt(dist) > 1.5 * currentPosition.distance(actual)) {
                             stop(false)
-                            initialize(currentPosition, { getEntityPosition(lastTarget) }, range, importance, 0, false)
+                            goTo(lastTarget, importance, range)
                             return
                         }
                         currentPosition.release()
@@ -318,8 +318,11 @@ class MovementProcessor internal constructor(
                 if (last.distanceSquared(dest) > range * range) {
                     val currentPosition = ReusablePoint.fromPoint(entity.position)
                     if (pathLength + last.distance(dest) > 1.5 * currentPosition.distance(dest)) {
-                        stop(false)
-                        initialize(currentPosition, destination, range, importance, 0, false)
+                        val lastTarget = lastTarget
+                        if (lastTarget != null) {
+                            stop(false)
+                            goTo(lastTarget, importance, range)
+                        }
                     } else {
                         currentPosition.release()
                         initialize(last, destination, range, importance, 0, false)
@@ -332,11 +335,16 @@ class MovementProcessor internal constructor(
     fun isActive() = pathIndex != path.size || inProgress != null
 
     fun stop(clearPath: Boolean = true) {
-        if (inProgress != null) {
-            inProgress?.cancel(PathfindingResult.CancellationReason.OUTDATED)
-            inProgress = null
-        }
+        cancelTaskInProgress()
         clearLastData(clearPath)
+    }
+
+    private fun cancelTaskInProgress() {
+        val inProgress = inProgress
+        if (inProgress != null) {
+            inProgress.cancel(PathfindingResult.CancellationReason.OUTDATED)
+            this.inProgress = null
+        }
     }
 
     private fun clearLastData(clearPath: Boolean) {

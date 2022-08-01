@@ -20,7 +20,8 @@ fun main() {
     val hub = enodia.initializeMovementProcessingHub(
         max(2, Runtime.getRuntime().availableProcessors()),
         5,
-        { if (it is LivingEntity) it.getAttributeValue(Attribute.MOVEMENT_SPEED) else .5F }
+        { if (it is LivingEntity) it.getAttributeValue(Attribute.MOVEMENT_SPEED) else .25F },
+        null
     )
 
     val instance = MinecraftServer.getInstanceManager().createInstanceContainer()
@@ -82,9 +83,11 @@ fun main() {
             }, typeArg)
         })
         addSubcommand(Command("remove", "rem").apply {
-            synchronized(entities) {
-                entities.removeLastOrNull()?.remove()
-            }
+            addSyntax({_, _ ->
+                synchronized(entities) {
+                    entities.removeLastOrNull()?.remove()
+                }
+            })
         })
         addSubcommand(Command("follow").apply {
             addSyntax({ sender, _ ->
@@ -92,7 +95,7 @@ fun main() {
                     return@addSyntax
                 }
                 synchronized(entities) {
-                    entities.forEach { it.movementProcessor!!.goTo(sender, MovementImportance.IMPORTANT.copy(teleportOnFail = false), .25F) }
+                    entities.forEach { it.movementProcessor!!.goTo(sender, MovementImportance.IMPORTANT.copy(teleportOnFail = false), 2F) }
                 }
             })
         })
