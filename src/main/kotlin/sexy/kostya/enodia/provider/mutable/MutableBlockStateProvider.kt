@@ -5,7 +5,6 @@ import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerBlockBreakEvent
 import net.minestom.server.event.player.PlayerBlockPlaceEvent
 import net.minestom.server.event.trait.InstanceEvent
-import net.minestom.server.instance.Chunk
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.utils.chunk.ChunkUtils
@@ -53,9 +52,9 @@ class MutableBlockStateProvider(instance: Instance) : CachedBlockStateProvider(i
             sections[sectionIndex] = section
         }
         section[
-                x % Chunk.CHUNK_SIZE_X,
-                y % Chunk.CHUNK_SECTION_SIZE,
-                z % Chunk.CHUNK_SIZE_Z
+                x and 15,
+                y and 15,
+                z and 15
         ] = BlockStateProvider.createMaskFromBlock(block)
 
         val copiedCache = Long2ObjectOpenHashMap(cache)
