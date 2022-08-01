@@ -6,7 +6,7 @@
 
     <groupId>sexy.kostya</groupId>
     <artifactId>enodia-pf</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

@@ -129,24 +129,12 @@ class EnodiaPF(internal val blockStateProviderFactory: BlockStateProviderFactory
      *                                  given target. Default value restricts following of target that's not
      *                                  within 24 blocks range, because path calculation complexity increases
      *                                  quadratically with distance.
-     * @param entityTeleport - function to teleport given entity to given point (or not to, if you consider so).
      */
     fun initializeMovementProcessingHub(
         threads: Int,
         maxRetries: Int,
         entitySpeedGetter: (Entity) -> Float,
-        entityContinueFollowing: ((entity: Entity, target: Entity, distanceSquared: Float) -> Boolean)? = { _, _, ds -> ds <= 24 * 24 },
-        entityTeleport: (Entity, point: ReusablePoint) -> Unit = { entity, point ->
-            entity.teleport(
-                Pos(
-                    point.x.toDouble(),
-                    point.y.toDouble(),
-                    point.z.toDouble(),
-                    entity.position.yaw,
-                    entity.position.pitch
-                )
-            )
-        }
-    ) = MovementProcessingHub(this, threads, maxRetries, entitySpeedGetter, entityContinueFollowing, entityTeleport)
+        entityContinueFollowing: (entity: Entity, target: Entity, distanceSquared: Float) -> Boolean = { _, _, ds -> ds <= 24 * 24 }
+    ) = MovementProcessingHub(this, threads, maxRetries, entitySpeedGetter, entityContinueFollowing)
 
 }

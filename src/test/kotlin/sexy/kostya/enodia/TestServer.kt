@@ -9,7 +9,7 @@ import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.*
 import net.minestom.server.event.player.PlayerLoginEvent
 import net.minestom.server.instance.block.Block
-import sexy.kostya.enodia.movement.MovementImportance
+import sexy.kostya.enodia.movement.importance.MovementImportance
 import sexy.kostya.enodia.pathfinding.PathfindingCapabilities
 import kotlin.math.max
 
@@ -20,8 +20,8 @@ fun main() {
     val hub = enodia.initializeMovementProcessingHub(
         max(2, Runtime.getRuntime().availableProcessors()),
         5,
-        { if (it is LivingEntity) it.getAttributeValue(Attribute.MOVEMENT_SPEED) else .25F },
-        null
+        { if (it is LivingEntity) it.getAttributeValue(Attribute.MOVEMENT_SPEED) else Attribute.MOVEMENT_SPEED.defaultValue },
+        { _, _, _ -> true }
     )
 
     val instance = MinecraftServer.getInstanceManager().createInstanceContainer()
@@ -95,7 +95,7 @@ fun main() {
                     return@addSyntax
                 }
                 synchronized(entities) {
-                    entities.forEach { it.movementProcessor!!.goTo(sender, MovementImportance.IMPORTANT.copy(teleportOnFail = false), 2F) }
+                    entities.forEach { it.movementProcessor!!.goTo(sender, MovementImportance.UNIMPORTANT, 2F) }
                 }
             })
         })

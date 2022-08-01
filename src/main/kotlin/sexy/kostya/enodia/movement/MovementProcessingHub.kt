@@ -11,8 +11,7 @@ class MovementProcessingHub internal constructor(
     threads: Int,
     internal val maxRetries: Int = 5,
     internal val entitySpeedGetter: (Entity) -> Float,
-    internal val entityContinueFollowing: ((entity: Entity, target: Entity, distanceSquared: Float) -> Boolean)?,
-    internal val entityTeleport: (Entity, point: ReusablePoint) -> Unit
+    internal val entityContinueFollowing: (entity: Entity, target: Entity, distanceSquared: Float) -> Boolean
 ) {
 
     private var counter = 0
@@ -27,7 +26,7 @@ class MovementProcessingHub internal constructor(
         thread
     }
 
-    fun createMovementProcessor(entity: Entity, pathfindingCapabilities: PathfindingCapabilities) = MovementProcessor(
+    fun createMovementProcessor(entity: Entity, pathfindingCapabilities: PathfindingCapabilities): MovementProcessor = MovementProcessorImpl(
         entity,
         pathfindingCapabilities,
         this,
